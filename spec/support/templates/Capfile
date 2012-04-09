@@ -1,0 +1,4 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', '..', 'lib'))
+ENV['CAPISTRANO_RECIPES'].split(' ').each do |recipe|
+  require "recipes/#{recipe}"
+end

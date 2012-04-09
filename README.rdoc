@@ -1,8 +1,9 @@
-= capistrano-qualia
+= Quapistrano
 
-Description goes here.
+A 'Work in Progress' gem with several recipes for capistrano, using a clean approach, delegating dawting tasks to provisioners.
+For now, it features mysql workflow management with backup support, unicorn start/stop restart/reload and shared assets' synchronization.
 
-== Contributing to capistrano-qualia
+== Contributing to Quapistrano
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
