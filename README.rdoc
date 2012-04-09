@@ -3,6 +3,48 @@
 A 'Work in Progress' gem with several recipes for capistrano, using a clean approach, delegating dawting tasks to provisioners.
 For now, it features mysql workflow management with backup support, unicorn start/stop restart/reload and shared assets' synchronization.
 
+== Recipes
+
+[db]
+      Manage DB tasks. Currently supports mysql only. It has the following tasks:
+      * (local|remote):backup   - creates a local/remote snapshot of the current database state
+      * (local|remote):cleanup  - cleans up local/remote backup leaving up to a specified number of backups (<tt>db_backup_count</tt>)
+      * (local|remote):restore  - restores the local/remote database to the latest backup found in the backup directory (<tt>db_backup_dir</tt>)
+      * (local|remote):setup    - creates the backup folder in the given directory (<tt>db_backup_dir</tt> for remote and <tt>db_backup_local_dir</tt> for local)
+      * (local|remote):sync     - syncs the local/remote database with its counterpart (<tt>cap local:sync</tt> syncs local database with the remote's state)
+      * remote:download         - downloads the current remote database state (also creates a backup)
+      * remote:upload           - uploads the latest local backup (does not create a backup of either of the databses)
+      * remote:create_database  - creates the database in the remote (used after <tt>deploy:setup</tt>)
+      
+      The *db* recipe also adds hooks to <tt>deploy:setup</tt>, <tt>deploy:cleanup</tt> (with the corresponding local/remote tasks) and runs <tt>remote:backup</tt> before <tt>deploy:migrate</tt>.
+      
+[unicorn] 
+      Manages Unicorn in-production workflow. Supports the following tasks:
+      * unicorn:setup           - creates a folder to place the socket files (to be used in <tt>deploy:setup</tt>, can be changed through <tt>unicorn_socket</tt>)
+      * unicorn:start           - starts unicorn in daemon mode. It uses bundler if the bundler recipe is included - i.e. <tt>bundler exec unicorn_rails ...</tt> (uses <tt>unicorn_bin</tt> and <tt>unicorn_config</tt>)
+      * unicorn:stop            - stops the unicorn daemon by reading the pid file (uses <tt>pids_path</tt>)
+      * unicorn:reload          - reloads unicorn configuration (usually done after <tt>deploy:upload</tt>)
+      * unicorn:restart         - restarts unicorn daemon, using the current release (after <tt>deploy:update</tt>)
+      * unicorn:status          - lists unicorn's running processes
+      
+      The *unicorn* recipe links <tt>deploy:restart</tt> to <tt>unicorn:restart</tt> and runs <tt>unicorn:setup</tt> after <tt>deploy:setup</tt>
+
+[shared]
+      Manages shared paths. Paths are given in Hash form (i.e. <tt>{ 'uploads' => 'public/uploads' }</tt>) through the variable <tt>shared_folders</tt>, in which the key is the shared folder path (<tt>www/shared/uploads</tt>) and the value is the symlink path (<tt>current/public/uploads</tt>). Supports:
+      * shared:local:sync       - Syncs local folders with remote ones
+      * shared:remote:setup     - Creates the folders
+      * shared:remote:symlink   - Creates the symlinks
+      * shared:remote:sync      - Syncs the remote folders with the local ones
+      
+      The *shared* recipe adds a <tt>deploy:setup</tt> hook and runs <tt>shared:remote:symlink</tt> after <tt>deploy:update</tt>
+      
+== TODO
+
+* Make tests
+* Update README with usage instructions
+* More recipes (ssh, bluepill, etc)
+  
+
 == Contributing to Quapistrano
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.

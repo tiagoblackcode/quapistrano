@@ -44,12 +44,12 @@ Jeweler::RubygemsDotOrgTasks.new
 
 #task :default => :test
 
-#require 'rdoc/task'
-#Rake::RDocTask.new do |rdoc|
-#  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-#
-#  rdoc.rdoc_dir = 'rdoc'
-#  rdoc.title = "quapistrano-qualia #{version}"
-#  rdoc.rdoc_files.include('README*')
-#  rdoc.rdoc_files.include('lib/**/*.rb')
-#end
+require 'rdoc/task'
+Rake::RDocTask.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "quapistrano #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
+end
